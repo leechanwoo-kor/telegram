@@ -32,7 +32,7 @@ CATEGORIES = [
 LANGS = ["KO", "EN"]
 
 # Hugging Face settings
-HUGGINGFACE_URL = "https://huggingface.co/"
+HUGGINGFACE_URL = "https://huggingface.co"
 HUGGINGFACE_PAPERS_URL = "https://huggingface.co/papers"
 
 # Update interval (in seconds)
