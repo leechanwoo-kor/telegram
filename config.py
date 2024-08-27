@@ -36,7 +36,7 @@ HUGGINGFACE_URL = "https://huggingface.co/"
 HUGGINGFACE_PAPERS_URL = "https://huggingface.co/papers"
 
 # Update interval (in seconds)
-BOT_POLL_INTERVAL = 1  # 60 second
+BOT_POLL_INTERVAL = 0.0  # Time to wait between polling updates from Telegram in seconds. Default is 0.0.
 UPDATE_INTERVAL = 60 * 60  # 1 hour
 
 # Logging format
