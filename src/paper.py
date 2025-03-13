@@ -68,14 +68,30 @@ async def fetch_paper_abstract(paper_url):
             async with session.get(paper_url) as response:
                 if response.status == 200:
                     soup = BeautifulSoup(await response.text(), "html.parser")
-                    abstract_tag = soup.find(
-                        "p", class_="text-gray-700 dark:text-gray-400"
-                    )
+                    
+                    # 새로운 방식으로 초록 찾기 시도
+                    # 1. 'Abstract' 헤더 다음에 오는 텍스트 찾기
+                    abstract_header = soup.find(lambda tag: tag.name in ['h2', 'h3'] and 'Abstract' in tag.text)
+                    if abstract_header:
+                        abstract_text = ""
+                        next_element = abstract_header.find_next()
+                        while next_element and next_element.name not in ['h2', 'h3']:
+                            if next_element.name == 'p' or next_element.string:
+                                text = next_element.get_text(strip=True)
+                                if text and 'View arXiv page' not in text and 'View PDF' not in text and 'Add to collection' not in text:
+                                    abstract_text += text + " "
+                            next_element = next_element.find_next()
+                        
+                        if abstract_text:
+                            return abstract_text.strip()
+                    
+                    # 기존 방식으로 시도 (이전 버전과의 호환성 유지)
+                    abstract_tag = soup.find("p", class_="text-gray-700 dark:text-gray-400")
                     if abstract_tag:
                         return abstract_tag.get_text(strip=True).replace("\n", " ")
     except Exception as e:
         logger.error(f"Error fetching paper abstract: {e}")
-    return "Abstract not found."
+    return "초록을 찾을 수 없음"
 
 
 async def update_paper():
