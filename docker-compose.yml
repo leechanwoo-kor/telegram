@@ -1,0 +1,10 @@
+services:
+  bot:
+    build: ./bot
+    image: paper_bot:1.0
+    container_name: bot
+    env_file:
+      - .env
+    volumes:
+      - ./db:/app/db
+    restart: unless-stopped

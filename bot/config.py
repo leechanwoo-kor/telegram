@@ -30,14 +30,16 @@ CATEGORIES = [
     "Recommendation",
 ]
 LANGS = ["KO", "EN"]
+DEFAULT_LANGUAGE = "KO"
+DEFAULT_CATEGORIES_STR = ",".join(CATEGORIES)
 
 # Hugging Face settings
 HUGGINGFACE_URL = "https://huggingface.co"
 HUGGINGFACE_PAPERS_URL = "https://huggingface.co/papers"
 
+# Logging format
+LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
 # Update interval (in seconds)
 BOT_POLL_INTERVAL = 0.0  # Time to wait between polling updates from Telegram in seconds. Default is 0.0.
 UPDATE_INTERVAL = 60 * 60  # 1 hour
-
-# Logging format
-LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
