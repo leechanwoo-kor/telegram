@@ -18,6 +18,11 @@ def setup_logging():
         root_logger.handlers.clear()
 
     logging.basicConfig(format=LOG_FORMAT, level=log_level, force=True) # force=True to override existing basicConfig if any
+    
+    # Disable httpx and httpcore logging to reduce noise
+    logging.getLogger("httpx").setLevel(logging.WARNING)
+    logging.getLogger("httpcore").setLevel(logging.WARNING)
+    
     logger = logging.getLogger(__name__)
     logger.info(f"Logging configured with level: {log_level_str}")
 
