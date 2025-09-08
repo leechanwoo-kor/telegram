@@ -1,8 +1,21 @@
 import logging
 import os
+from datetime import datetime
+import pytz
 from config import LOG_FORMAT # Assuming config.py is accessible
 
 DEFAULT_LOG_LEVEL = "INFO"
+
+class KSTFormatter(logging.Formatter):
+    """Custom formatter to convert log timestamps to KST (Korea Standard Time)."""
+    def formatTime(self, record, datefmt=None):
+        kst = pytz.timezone('Asia/Seoul')
+        dt = datetime.fromtimestamp(record.created, tz=pytz.UTC)
+        dt = dt.astimezone(kst)
+        if datefmt:
+            return dt.strftime(datefmt)
+        else:
+            return dt.strftime('%Y-%m-%d %H:%M:%S')
 
 def setup_logging():
     """Sets up global logging configuration."""
@@ -16,8 +29,15 @@ def setup_logging():
     # or if other libraries (like uvicorn in some FastAPI setups) also configure the root logger.
     if root_logger.hasHandlers():
         root_logger.handlers.clear()
-
-    logging.basicConfig(format=LOG_FORMAT, level=log_level, force=True) # force=True to override existing basicConfig if any
+    
+    # Create handler with KST formatter
+    handler = logging.StreamHandler()
+    formatter = KSTFormatter(LOG_FORMAT, datefmt='%Y-%m-%d %H:%M:%S')
+    handler.setFormatter(formatter)
+    
+    # Configure root logger
+    root_logger.setLevel(log_level)
+    root_logger.addHandler(handler)
     
     # Disable httpx and httpcore logging to reduce noise
     logging.getLogger("httpx").setLevel(logging.WARNING)

@@ -45,6 +45,7 @@ async def run_paper():
                 # parse_papers는 이제 HTML 내용만 인자로 받음
                 papers_parsed = await parse_papers(html_content) 
                 new_papers_to_send = []
+                skipped_papers = 0
                 for paper_name, paper_url, paper_abstract in papers_parsed:
                     if not is_paper_exists(paper_name):
                         # Anthropic 서비스를 사용하여 요약, 번역, 분류 처리
@@ -67,13 +68,17 @@ async def run_paper():
                             }
                         )
                         logger.info(f"New paper added: {paper_name}")
+                    else:
+                        skipped_papers += 1
+                        logger.debug(f"Paper already exists in database, skipping: {paper_name}")
 
                 if new_papers_to_send:
+                    logger.info(f"Processing {len(new_papers_to_send)} new papers, {skipped_papers} already existed")
                     users = get_users()
                     for user in users:
                         await send_daily_message(user, new_papers_to_send)
                 else:
-                    logger.info("No new papers found or all were skipped.")
+                    logger.info(f"No new papers found. Total papers checked: {len(papers_parsed)}, All {skipped_papers} papers already existed in database")
             else:
                 logger.info("No content fetched or fetch_day is None.")
 
